@@ -24,6 +24,7 @@ class DB:
 
     def add_record(self,user_id,session_id,doc):
         try:
+            self.conn = s2.connect(os.environ['SINGLESTORE'])
             with self.conn:
                 with self.conn.cursor() as cur:
                     q_string = "INSERT INTO calhacks.SESSION (user_id, session_id, doc) VALUES (%s, %s, %s)"
@@ -60,6 +61,7 @@ class DB:
         return [vectorizer.get_feature_names_out()[i] for i in top_k_keywords]
     
     def retrieve_docs_based_on_chosen_topics(self, session_id,search_string):
+        self.conn = s2.connect(os.environ['SINGLESTORE'])
         with self.conn:
             with self.conn.cursor() as cur:
                 q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
