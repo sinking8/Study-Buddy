@@ -9,9 +9,10 @@ import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
 import CardContent from '@mui/material/CardContent';
 
-import { redirect } from 'react-router';
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  let navigate = useNavigate();
   return (
     <Box
       id="hero"
@@ -37,7 +38,6 @@ export default function Hero() {
       >
         <Stack
           spacing={2}
-          useFlexGap
           sx={{ alignItems: 'center', width: { xs: '100%', sm: '70%' } }}
         >
 
@@ -67,14 +67,14 @@ export default function Hero() {
               Not&nbsp;Harder
             </Typography>
         </Stack>
-        <Grid container useFlexGap mt={3} gap={2} sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }} >
+        <Grid container mt={3} gap={2} sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }} >
           <Grid item>
             <Card p={5}>
               <CardContent align='center' justifyContent='center' p={4}>
                 <Typography variant="h5" align='center' >Gameify</Typography>
                 <Divider />
                 <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
-                <Button mt={3} variant='contained' color='primary'>Game On</Button>
+                <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate("data_upload");}}>Game On</Button>
                 </CardContent>
             </Card>
           </Grid>
