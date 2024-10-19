@@ -3,8 +3,11 @@ import numpy as np
 
 import google.generativeai as genai
 import os
-
+from dotenv import load_dotenv
 import warnings
+
+
+load_dotenv() 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 class GeminiAPI:
@@ -24,6 +27,16 @@ class GeminiAPI:
     def get_matches(self,context,noq):
         try:
             prompt_text = self.prompts_json['match']['prompt'].format(CONTEXT=context,TIMES=noq)
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(prompt_text)
+            return True,response.text
+        except Exception as e:
+            warnings.warn(f"Error in get_matches: {e}")
+            return False,str(e)
+    
+    def get_qna(self,context,noq, mode='easy'):
+        try:
+            prompt_text = self.prompts_json['mcq']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= mode)
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
             return True,response.text

@@ -4,5 +4,8 @@
     },
     "match":{
         "prompt":"Here is the context for the matching questions {CONTEXT}. Kindly prepare {TIMES} matching questions. I want the output format in the form of a nested list where each sub-arrays are matching pairs"
+    },
+    "test":{
+        "prompt":"Here is the context for the multiple choice questions {CONTEXT}. Kindly prepare {TIMES} multiple choice questions in {MODE} mode with 4 options. I want the output format in the form of json, where each mcq question should be a nested json in the format question:question_string,options:List[],correct_answer:answer,hint:short_hint_string"
     }
 }

@@ -1,4 +1,5 @@
 import json
+import requests
 from fastapi import FastAPI
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
@@ -67,3 +68,14 @@ def get_key_words(session_id :str):
 def get_docs(session_id :str,search_string:str):
     status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
     return {"status":status,"response":response}
+
+
+@app.get("/get_mcq_using_fetch")
+def get_mcq_questions(session_id: str,search_string:str):
+    status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
+    if(status == False):
+        return {"status":status,"response":response}
+    
+    # status, response = gemini_api.get_mcqs(" ".join(response), 5)
+    status, response, timestamp  = requests.post("http://127.0.0.1:8000/rest/post", json = {"response": response, "mode":'easy'}) 
+    return {"status": status, "response": response}
