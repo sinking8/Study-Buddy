@@ -9,6 +9,8 @@ import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
 import CardContent from '@mui/material/CardContent';
 
+import { redirect } from 'react-router';
+
 export default function Hero() {
   return (
     <Box
@@ -67,21 +69,22 @@ export default function Hero() {
         </Stack>
         <Grid container useFlexGap mt={3} gap={2} sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }} >
           <Grid item>
-            <Card>
+            <Card p={5}>
               <CardContent align='center' justifyContent='center' p={4}>
                 <Typography variant="h5" align='center' >Gameify</Typography>
                 <Divider />
-                <Typography align='center'>Earn points and badges as you complete tasks and quizzes.</Typography>
-                <Button mt={3} variant='contained' color='primary'>Get Started</Button>
+                <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
+                <Button mt={3} variant='contained' color='primary'>Game On</Button>
                 </CardContent>
             </Card>
           </Grid>
           <Grid item>
-          <Card>
-              <CardContent>
-                <Typography variant="h5" align='center' justifyContent='center'>Listen on the Go</Typography>
+            <Card p={5}>
+              <CardContent align='center' justifyContent='center' p={4}>
+                <Typography variant="h5" align='center'  >Musify</Typography>
                 <Divider />
-                Earn points and badges as you complete tasks and quizzes.
+                <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
+                <Button mt={3} variant='contained' color='primary'>Tune In</Button>
                 </CardContent>
             </Card>
           </Grid>
