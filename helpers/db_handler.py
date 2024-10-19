@@ -21,8 +21,23 @@ class DB:
 
     def connect_db(self):
         self.conn = s2.connect(os.environ['SINGLESTORE'])
-        
-    
+
+    def add_record(self,user_id,session_id,doc):
+        try:
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    q_string = "INSERT INTO calhacks.SESSION (user_id, session_id, doc) VALUES (%s, %s, %s)"
+                    cur.execute(q_string, (user_id, session_id, doc))
+                    return True, "Record added successfully"
+        except Exception as e:
+            warnings.warn(f"Error in add_record: {e}")
+            return False, e
+
+    def insert_record(self):
+        with self.conn:
+            with self.conn.cursor() as cur:
+                q_string = "INSERT INTO calhacks.SESSION (session_id, doc) VALUES (%s, %s)"
+
     def retrieve_top_k_topics(self,session_id='1'):
         try:
             with self.conn:

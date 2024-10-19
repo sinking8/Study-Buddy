@@ -1,22 +1,12 @@
+import os
 import json
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, File, Form, UploadFile,HTTPException
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-app = FastAPI()
-origins = [
-    "http://localhost",
-    "http://localhost:8080",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+import random
 
 # Import env file
 from dotenv import load_dotenv
@@ -24,8 +14,16 @@ load_dotenv()
 
 from helpers.gemini import *
 from helpers.db_handler import *
+from helpers.process import *
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Load Prompts
 with open('./utils/prompts.json') as f:
@@ -79,3 +77,59 @@ def get_mcq_questions(session_id: str,search_string:str):
     # status, response = gemini_api.get_mcqs(" ".join(response), 5)
     status, response, timestamp  = requests.post("http://127.0.0.1:8000/rest/post", json = {"response": response, "mode":'easy'}) 
     return {"status": status, "response": response}
+@app.post("/create_session")
+async def create_session(
+    session_name: str = Form(...), 
+    files: List[UploadFile] = File(...)
+):
+    upload_directory = "./uploads"
+    
+    # Create upload directory if it does not exist
+    if not os.path.exists(upload_directory):
+        os.makedirs(upload_directory)
+
+    file_paths = []
+    
+    # Process each uploaded file
+    for file in files:
+        try:
+            # Use a more descriptive naming convention
+            file_ext = file.filename.split('.')[-1]  # Get the file extension
+            file_name = f"{file.filename}.{file_ext}"
+            file_path = os.path.join(upload_directory, file_name)
+
+            # Save the uploaded file
+            with open(file_path, "wb") as f:
+                content = await file.read()
+                f.write(content)  # Write the binary data to the file
+            
+            file_paths.append(file_path)
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error saving file {file.filename}: {str(e)}")
+
+    # Assuming you want to store this session information in DB
+    session_id = random.randint(100000, 999999)
+    
+    cleaned_texts = [ ]
+    for file_path in file_paths:
+        try:
+            cleaned_texts.append(process_file(file_path))
+            
+        except Exception as e:
+            print(f'Skipping {file}')
+        
+        finally:
+            os.remove(file_path)
+
+
+    ## Add Record to SingleStore
+    for doc in cleaned_texts:
+        DB.add_record({'user_id':1,"session_id":session_id,"doc":doc})
+
+    return JSONResponse(content={
+        "status": True,
+        "message": "Files uploaded successfully",
+        "session_id": session_id,
+        "uploaded_files": file_paths  # Return the paths of the uploaded files
+    })
