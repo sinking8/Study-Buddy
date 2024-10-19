@@ -22,13 +22,14 @@ class GeminiAPI:
         except Exception as e:
             warnings.warn(f"Error in get_mcqs: {e}")
             return False,str(e)
-            
         
-
-
-
-
-    
-
-
-        
+    def get_matches(self,context,noq):
+        try:
+            prompt_text = self.prompts_json['match']['prompt'].format(CONTEXT=context,TIMES=noq)
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(prompt_text)
+            print(response.text)
+            return True,response.text
+        except Exception as e:
+            warnings.warn(f"Error in get_matches: {e}")
+            return False,str(e)

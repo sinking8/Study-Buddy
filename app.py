@@ -22,13 +22,16 @@ load_dotenv()
 
 # Load Gemini
 from modules.gemini import *
-
 app = FastAPI()
 
 # Load Prompts
 with open('./utils/prompts.json') as f:
     prompts = json.load(f)
 gemini_api = GeminiAPI(prompts)
+
+# Sample Documents
+# loading docs
+# we will use some artificial data for this example
 
 @app.get("/")
 def home_root():
