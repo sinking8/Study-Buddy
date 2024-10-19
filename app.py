@@ -41,15 +41,18 @@ def home_root():
 def get_prompts():
     return prompts
 
-@app.get("/save_content")
-def save_content():
-   # Langchain code here
-   pass
-
 @app.get("/get_mcq_questions")
 def get_mcq_questions(context_id: int):
     sample_context = "Apple is a fruit"
     # context = fetch_context(context_id)
     
     status, response = gemini_api.get_mcqs(sample_context, 5)
+    return {"status": status, "response": response}
+
+@app.get("/get_match_questions")
+def get_match_questions(context_id: int):
+    sample_context = "Apple is a fruit"
+    # context = fetch_context(context_id)
+    
+    status, response = gemini_api.get_matches(sample_context, 5)
     return {"status": status, "response": response}
