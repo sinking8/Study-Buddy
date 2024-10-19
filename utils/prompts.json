@@ -4,5 +4,8 @@
     },
     "match":{
         "prompt":"Here is the context for the matching questions {CONTEXT}. Kindly prepare {TIMES} matching questions. I want the output format in the form of a nested list where each sub-arrays are matching pairs"
+    },
+    "song":{
+        "prompt":"This is a song writing task. I want you to write a song on this content. The song should contain all the technical details and should emphasize the main points. Make sure to use rhyming words and make it catchy."
     }
 }
