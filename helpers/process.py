@@ -4,7 +4,6 @@ import nltk
 import spacy
 
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
 
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from PIL import Image
@@ -18,9 +17,6 @@ nltk.download('punkt')
 
 # Load spaCy's English model for lemmatization
 nlp = spacy.load('en_core_web_sm')
-
-# Initialize the stemmer
-stemmer = PorterStemmer()
 
 def image_to_description(image_path):
     # Load BLIP model and processor
@@ -64,13 +60,7 @@ def process_text(text):
     # Remove stopwords and non-alphabetical words
     filtered_words = [word for word in words if word.isalpha() and word.lower() not in stop_words]
 
-    # Apply stemming
-    stemmed_words = [stemmer.stem(word) for word in filtered_words]
-
-    # Apply lemmatization using spaCy
-    lemmatized_words = [token.lemma_ for token in nlp(" ".join(stemmed_words))]
-
-    return lemmatized_words
+    return filtered_words
 
 # Main function to handle different file types and process the text
 def process_file(file_path):
@@ -93,7 +83,9 @@ def process_file(file_path):
 
         # Process the extracted text
         cleaned_text = process_text(text)
-        return cleaned_text
+        cleaned_text = list(filter(lambda x:len(x)>1, cleaned_text))
+
+        return " ".join(cleaned_text)
 
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")

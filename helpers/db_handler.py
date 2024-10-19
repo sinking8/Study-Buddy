@@ -85,5 +85,4 @@ class DB:
             k=1,
             search_strategy=SingleStoreDB.SearchStrategy.TEXT_ONLY,
         )
-
-        return True, [page['page_content'] for page in textResults]
+        return True, [page.page_content for page in textResults]

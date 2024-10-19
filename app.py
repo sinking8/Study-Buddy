@@ -104,7 +104,11 @@ async def create_session(
     cleaned_texts = [ ]
     for file_path in file_paths:
         try:
-            cleaned_texts.append(process_file(file_path))
+            processed = process_file(file_path)
+
+            # Split processed to chunks of size 100
+            chunks = [processed[i:i+100] for i in range(0,len(processed),100)]
+            cleaned_texts+=chunks
             
         except Exception as e:
             print(f'Skipping {file}')
@@ -112,10 +116,10 @@ async def create_session(
         finally:
             os.remove(file_path)
 
-
     ## Add Record to SingleStore
     for doc in cleaned_texts:
-        DB.add_record({'user_id':1,"session_id":session_id,"doc":doc})
+        print(doc)
+        DB.add_record("1",str(session_id),doc)
 
     return JSONResponse(content={
         "status": True,
