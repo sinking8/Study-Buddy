@@ -5,7 +5,9 @@ from langchain_openai import OpenAIEmbeddings
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import singlestoredb as s2
-from langchain.vectorstores import SingleStoreVectorStore
+from langchain_community.vectorstores import SingleStoreDB
+from langchain_community.vectorstores.utils import DistanceStrategy
+from langchain_core.documents import Document
 
 class DB:
     conn = None
@@ -45,7 +47,7 @@ class DB:
         return [vectorizer.get_feature_names_out()[i] for i in top_k_keywords]
     
     def retrieve_docs_based_on_chosen_topics(self, session_id,search_string):
-        try:
+        with self.conn:
             with self.conn.cursor() as cur:
                 q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
                 cur.execute(q_string, (session_id,))
@@ -53,21 +55,20 @@ class DB:
                 # Retrieve the documents
                 docs = cur.fetchall()
 
-            # Perform vector similarity search using langchain RAG
-            query_vector = self.embeddings.embed_query(search_string)
-            doc_vectors = [self.embeddings.embed_query(doc[0]) for doc in docs]
+        docs = [Document(page_content=doc[0]) for doc in docs]
+        docsearch = SingleStoreDB.from_documents(
+            docs,
+            self.embeddings,
+            distance_strategy=DistanceStrategy.DOT_PRODUCT, 
+            use_vector_index=True,
+            use_full_text_search=True,
+            table_name="SESSION_vectorstore", 
+        )
 
-            # Use langchain's vector search method
-            vector_store = SingleStoreVectorStore.from_documents(
-                documents=[doc[0] for doc in docs],
-                embedding=self.embeddings
-            )
+        textResults = docsearch.similarity_search(
+            search_string,
+            k=1,
+            search_strategy=SingleStoreDB.SearchStrategy.TEXT_ONLY,
+        )
 
-            # Perform the search
-            search_results = vector_store.similarity_search_by_vector(query_vector, k=5)
-
-            return True, search_results
-        
-        except Exception as e:
-            warnings.warn(f"Error in retrieve_docs_based_on_chosen_topics: {e}")
-            return False, e
+        return True, [page['page_content'] for page in textResults]
