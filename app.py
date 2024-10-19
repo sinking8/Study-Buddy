@@ -42,11 +42,12 @@ def get_prompts():
     return prompts
 
 @app.get("/get_mcq_questions")
-def get_mcq_questions(context_id: int):
-    sample_context = "Apple is a fruit"
-    # context = fetch_context(context_id)
+def get_mcq_questions(session_id: str,search_string:str):
+    status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
+    if(status == False):
+        return {"status":status,"response":response}
     
-    status, response = gemini_api.get_mcqs(sample_context, 5)
+    status, response = gemini_api.get_mcqs(" ".join(response), 5)
     return {"status": status, "response": response}
 
 @app.get("/get_match_questions")
