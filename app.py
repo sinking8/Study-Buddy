@@ -51,11 +51,11 @@ def get_mcq_questions(session_id: str,search_string:str):
     return {"status": status, "response": response}
 
 @app.get("/get_match_questions")
-def get_match_questions(context_id: int):
-    sample_context = "Apple is a fruit"
-    # context = fetch_context(context_id)
-    
-    status, response = gemini_api.get_matches(sample_context, 5)
+def get_match_questions(session_id:str,search_string:str):
+    status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
+    if(status == False):
+        return {"status":status,"response":response}
+    status, response = gemini_api.get_matches(" ".join(response), 5)
     return {"status": status, "response": response}
 
 @app.get("/get_keywords")
