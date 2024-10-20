@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import AppAppBar from './components/AppAppBar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';

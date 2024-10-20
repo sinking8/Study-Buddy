@@ -11,10 +11,15 @@ const GraphComponent = () => {
   const [loading, setLoading] = useState(true);  // Track loading state
   const [error, setError] = useState(null);      // Track error state
 
+  const session_id = localStorage.getItem("session_id");  // Get session ID from local storage
+
   useEffect(() => {
     const fetchGraphData = async () => {
       try {
-        const response = await apiClient.get('/get_nodes').then(res=>{
+        const response = await apiClient.get(`/get_nodes?session_id=${session_id}`, {
+            headers: {
+                'accept': 'application/json',
+            }}).then(res=>{
           return res.data;
         }).then(res=>{
           setNodes(res.data.nodes);
