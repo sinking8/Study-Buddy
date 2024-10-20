@@ -28,6 +28,7 @@ export default function Hero() {
       })}
     >
       <Container
+        mt={3}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -43,6 +44,7 @@ export default function Hero() {
 
           <Typography
             variant="h1"
+            mt={3}
             sx={{
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
