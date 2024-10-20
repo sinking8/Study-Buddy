@@ -24,20 +24,13 @@ const ConnectionsGame = () => {
             console.log('Data fetched: ', response.data);
             setAnswers(response.data.response);
 
-            let categories = [];
+            let categories1 = [];
             response.data.response.map((item) => {
-                if(!categories.includes(item.category)){
-                    categories.push(item.category);
+                if(!categories1.includes(item.category)){
+                    categories1.push(item.category);
                 }
             });
-            // Remove duplicate cateogories
-            // Shuffle cards array
-            const shuffle = (array) => {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            };
+            setCategories(categories1);
         })
         .catch((error) => {
             console.error('Error fetching data: ', error);
@@ -55,20 +48,25 @@ const ConnectionsGame = () => {
     const drop = (e, category) => {
         e.preventDefault();
         const draggedAnswerId = e.dataTransfer.getData('text/plain');
-        const draggedAnswer = answers.find(answer => answer.id === draggedAnswerId);
-        
-        if (draggedAnswer && draggedAnswer.category === category) {
+        const draggedAnswer = answers.find(answer => (parseInt(answer.id) == parseInt(draggedAnswerId)));
+        console.log(draggedAnswerId)
+        console.log(answers)
+        console.log(draggedAnswer)
+    
+        if (draggedAnswer && draggedAnswer.category.toLowerCase() === category.toLowerCase()) {
+            // Correct match
             setAnswers(prevAnswers => 
                 prevAnswers.map(answer => 
-                    answer.id === draggedAnswerId ? { ...answer, isCorrect: true } : answer
+                    answer.id == draggedAnswerId ? { ...answer, isCorrect: true } : answer
                 )
             );
             setCorrectMatches(prevCount => prevCount + 1);
         } else {
+            // Incorrect match
             alert('Incorrect match! Try again.');
         }
     };
-
+    
     const checkCompletion = () => {
         if (correctMatches === totalMatches) {
             return 'Congratulations! All answers are categorized correctly!';
@@ -88,7 +86,7 @@ const ConnectionsGame = () => {
                             onDragOver={dragOver}
                             onDrop={(e) => drop(e, category)}
                         >
-                            {answers.filter(answer => answer.isCorrect).map(answer => answer.category === category && (
+                            {answers.filter(answer => answer.isCorrect).map(answer => answer.category == category && (
                                 <div key={answer.id} style={{ padding: '10px', margin: '10px', borderRadius: '5px', backgroundColor: '#2ecc71', color: '#fff' }}>
                                     {answer.label}
                                 </div>

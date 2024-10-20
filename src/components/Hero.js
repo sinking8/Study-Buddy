@@ -33,7 +33,6 @@ export default function Hero() {
       })}
     >
       <Container
-        mt={3}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -44,7 +43,7 @@ export default function Hero() {
       >
         <Stack
           spacing={2}
-          marginTop={80}
+          marginTop={5}
           sx={{ alignItems: 'center', width: { xs: '100%', sm: '70%' } }}
         >
 
@@ -76,39 +75,6 @@ export default function Hero() {
             </Typography>
             <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate('/data_upload')}}>Get Started!</Button>
         </Stack>
-        <Grid container mt={3} gap={2} sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }} >
-          <Grid item>
-            <Card p={5}>
-              <CardContent align='center' justifycontent='center' p={4}>
-                <Typography variant="h5" align='center' >Gameify</Typography>
-                <Divider />
-                <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
-                <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate("/game")}}>Game On</Button>
-                </CardContent>
-            </Card>
-          </Grid>
-          <Grid item>
-            <Card p={5}>
-              <CardContent align='center' justifycontent='center' p={4}>
-                <Typography variant="h5" align='center'  >Musify</Typography>
-                <Divider />
-                <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
-                <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate("/song")}}>Tune In</Button>
-                </CardContent>
-            </Card>
-          </Grid>
-          {/* New Canvas Button */}
-          <Grid item>
-            <Card>
-              <CardContent align='center'>
-                <Typography variant="h5" align='center'>Canvas</Typography>
-                <Divider />
-                <Typography align='center' mt={3}>Open your canvas to visualize flows.</Typography>
-                <Button variant='contained' color='primary' onClick={() => {navigate("/canvas")}}>Open Canvas</Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
       </Container>
     </Box>
   );

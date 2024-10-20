@@ -36,17 +36,17 @@ const gameCards = [
     description: 'Time to show off your organizing skills! Word tiles are thrown into chaos, and it’s up to you to categorize them before they start a rebellion. Can you reign in the vocabulary?',
   },
   {
-    gameName: 'Game Three',
-    navigate_url : '/snake',
+    gameName: 'Sequence-IT',
+    navigate_url : '/canvas',
     previewImage: 'https://via.placeholder.com/400x300.png?text=Game+Three+Preview',
-    description: 'Game Three is a fast-paced, action-packed shooter where you fight through hordes of enemies in stunning environments, equipped with futuristic weapons and abilities.',
+    description: 'Sequence',
   },
   {
-    gameName: 'Game Three',
-    navigate_url : '/snake',
-    previewImage: 'https://via.placeholder.com/400x300.png?text=Game+Three+Preview',
-    description: 'Game Three is a fast-paced, action-packed shooter where you fight through hordes of enemies in stunning environments, equipped with futuristic weapons and abilities.',
-  },
+    gameName:'Random',
+    navigate_url : Math.random() > 0.5 ? '/snake' : '/memory',
+    previewImage: 'https://via.placeholder.com/400x300.png?text=Random+Preview',
+    description: 'This is the randomizer! You will be faced with a random game. Good luck!'
+  }
 
 ];
 

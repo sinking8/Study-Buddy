@@ -13,9 +13,7 @@ export default function Home() {
       <ThemeProvider theme={MPTheme}>
         <CssBaseline enableColorScheme />
         <AppAppBar />
-        <div>
-            <Hero/>
-        </div>
+        <Hero/>
         <Footer/>
       </ThemeProvider>
   );
