@@ -1,6 +1,6 @@
 import os
 import json
-
+import requests
 from fastapi import FastAPI, File, Form, UploadFile,HTTPException
 from typing import List
 
@@ -104,6 +104,16 @@ def get_docs(session_id :str,search_string:str):
     status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
     return {"status":status,"response":response}
 
+
+@app.get("/get_mcq_using_fetch")
+def get_mcq_questions(session_id: str,search_string:str):
+    status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
+    if(status == False):
+        return {"status":status,"response":response}
+    
+    # status, response = gemini_api.get_mcqs(" ".join(response), 5)
+    status, response, timestamp  = requests.post("http://127.0.0.1:8000/rest/post", json = {"response": response, "mode":'easy'}) 
+    return {"status": status, "response": response}
 @app.post("/create_session")
 async def create_session(
     session_name: str = Form(...), 

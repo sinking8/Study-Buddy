@@ -1,8 +1,23 @@
 {
     "mcq":{
-        "prompt":"Here is the context for the multiple choice questions {CONTEXT}. Kindly prepare {TIMES} multiple choice questions with 4 options. I want the output format in the form of json, where each mcq question should be a nested json in the format question:question_string,options:List[],correct_answer"
+        "prompt":"Here is the context for the multiple-choice questions: {CONTEXT}. I need you to generate exactly {TIMES} multiple-choice questions with 4 options each. {MODE} The output must strictly be in raw JSON format without any extra text. Each question should follow this exact structure: question:question_string,options:List[],correct_answer:answer,hint:short_hint_string"
     },
     "match":{
+        "prompt":"Here is the context for the matching questions: {CONTEXT}. Please generate exactly {TIMES} matching questions. {MODE} The output must strictly be in the form of a raw JSON array where each sub-array contains a pair of matching items. Each matching pair should be represented like this: item1,match"
+    },
+    "sequence": {
+        "Prompt": "Here is the context: {CONTEXT}. {MODE} Based on this, I need you to determine whether the information is best represented as a process or a classification. {MODE} If it's a process, return a JSON array where each element represents a step in the process, maintaining the correct sequence. Each step should be formatted like this: step_number: integer, description: string. If it's a classification, return a JSON object in the form of a tree map, where each step can have multiple children. Format each node with its classification label and possible sub-classifications like this: label: string, children: [ { label: string, children: [...] }, ... ]. Please analyze the context and return the appropriate JSON format. Ensure there are no additional explanations or formatting—only the JSON object."
+    },
+    "connections": {
+        "Prompt": "Here is the context: {CONTEXT}. {MODE} I need you to create a connections game based on this context. Generate a 3x3 grid of 9 important keywords from the context. Group the keywords into 3 categories, with exactly 3 words per category. The challenge for the user will be to figure out which words belong to which category. Return the output in the following structure: A list of 9 keywords in random order (for the grid). A list of the 3 categories, with the 3 correct words for each category."
+    },
+    "song":{
+        "prompt":"This is a song writing task. I want you to write a song on this content. The song should contain all the technical details and should emphasize the main points. Make sure to use rhyming words and make it catchy."
+    },
+    "mode": {
+        "easy": "Generate simple, basic concepts or topics that test fundamental understanding of the content.",
+        "medium":"Generate moderately challenging concepts or topics that require some reasoning or deeper understanding.",
+        "hard":"Generate advanced and hard concepts or topics that require a deep understanding of the subject."
         "prompt":"Here is the context for the matching questions {CONTEXT}. Kindly prepare {TIMES} matching questions. I want the output format in the form of a nested list where each sub-arrays are matching pairs. ie [[option1,option2],[option3,option4]], Kindly send me the just the output. Send me the output in the form of json"
     },
     "song":{
