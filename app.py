@@ -3,8 +3,11 @@ import json
 import requests
 from fastapi import FastAPI, File, Form, UploadFile,HTTPException
 from typing import List
+
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
 
 import random
 
@@ -15,6 +18,9 @@ load_dotenv()
 from helpers.gemini import *
 from helpers.db_handler import *
 from helpers.process import *
+from helpers.hume_gen import *
+
+import json
 
 app = FastAPI()
 app.add_middleware(
@@ -32,13 +38,34 @@ with open('./utils/prompts.json') as f:
 gemini_api = GeminiAPI(prompts)
 DB = DB()
 
+hume_gen = HumeGen()
+
 @app.get("/")
 def home_root():
+    hume_gen.get_hume_audio("A for apples, B for bananas, J for jaykay I am the king I am the queen")
     return {"message": "Hello World"}
 
 @app.get("/prompts")
 def get_prompts():
     return prompts
+
+@app.get("/get_summarized_audio")
+def get_summarized_audio(session_id: str):
+    status, response = DB.retrieve_docs(session_id)
+    if(status == False):
+        return {"status":status,"response":response}
+    
+    status, response = gemini_api.audio_transcript_gen(" ".join(response))
+
+    if(status == False):
+        return {"status":status,"response":response}
+    
+    # Export Audio
+    audio = hume_gen.get_hume_audio(response)
+    audio = audio.export(format="wav")
+
+    # return audio as base64
+    return {"status": status, "response": audio,"response_text":response}
 
 @app.get("/get_mcq_questions")
 def get_mcq_questions(session_id: str,search_string:str):
@@ -50,11 +77,21 @@ def get_mcq_questions(session_id: str,search_string:str):
     return {"status": status, "response": response}
 
 @app.get("/get_match_questions")
-def get_match_questions(session_id:str,search_string:str):
-    status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
+def get_match_questions(session_id:str):
+    status,response = DB.retrieve_docs(session_id)
     if(status == False):
         return {"status":status,"response":response}
-    status, response = gemini_api.get_matches(" ".join(response), 5)
+    status, response = gemini_api.get_matches(" ".join(response), 8)
+    return {"status": status, "response": response}
+
+@app.get("/get_connections")
+def get_connections(session_id:str):
+    print(session_id)
+    status,response = DB.retrieve_docs(session_id)
+    if(status == False):
+        return {"status":status,"response":response}
+    status, response = gemini_api.fetch_connections(" ".join(response), 5)
+
     return {"status": status, "response": response}
 
 @app.get("/get_keywords")
@@ -114,7 +151,11 @@ async def create_session(
     cleaned_texts = [ ]
     for file_path in file_paths:
         try:
-            cleaned_texts.append(process_file(file_path))
+            processed = process_file(file_path)
+
+            # Split processed to chunks of size 100
+            chunks = [processed[i:i+100] for i in range(0,len(processed),100)]
+            cleaned_texts+=chunks
             
         except Exception as e:
             print(f'Skipping {file}')
@@ -122,10 +163,9 @@ async def create_session(
         finally:
             os.remove(file_path)
 
-
     ## Add Record to SingleStore
     for doc in cleaned_texts:
-        DB.add_record({'user_id':1,"session_id":session_id,"doc":doc})
+        DB.add_record("1",str(session_id),doc)
 
     return JSONResponse(content={
         "status": True,

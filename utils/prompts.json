@@ -18,5 +18,12 @@
         "easy": "Generate simple, basic concepts or topics that test fundamental understanding of the content.",
         "medium":"Generate moderately challenging concepts or topics that require some reasoning or deeper understanding.",
         "hard":"Generate advanced and hard concepts or topics that require a deep understanding of the subject."
+        "prompt":"Here is the context for the matching questions {CONTEXT}. Kindly prepare {TIMES} matching questions. I want the output format in the form of a nested list where each sub-arrays are matching pairs. ie [[option1,option2],[option3,option4]], Kindly send me the just the output. Send me the output in the form of json"
+    },
+    "song":{
+        "prompt":"This is a song writing task. I want you to write a lyrics for a song on this content {CONTEXT}. The song should contain all the technical details and should emphasize the main points. Make sure to use rhyming words and make it catchy and I just need the lyrics (max 10-20 lines)"
+    },
+    "connection":{
+        "prompt":"I would like you to generate a an array of json for this context: {CONTEXT}. Kindly prepare {TIMES} entries. The output should be in the form of a JSON . Below is an example format for the JSON output that is expected:Each json should have the keys id, category and label. The id denotes the keyword's id, category denotes which superset does the keyword belong to and the label is the name of the keyword provide me just the json no need of any other additional details. Make sure that you have atleast one or more json for one category. There must be only 3 categories please remember"
     }
 }

@@ -23,23 +23,24 @@ class DB:
         self.conn = s2.connect(os.environ['SINGLESTORE'])
 
     def add_record(self,user_id,session_id,doc):
+
         try:
+            self.conn = s2.connect(os.environ['SINGLESTORE'])
             with self.conn:
                 with self.conn.cursor() as cur:
                     q_string = "INSERT INTO calhacks.SESSION (user_id, session_id, doc) VALUES (%s, %s, %s)"
                     cur.execute(q_string, (user_id, session_id, doc))
-                    return True, "Record added successfully"
+        
         except Exception as e:
             warnings.warn(f"Error in add_record: {e}")
             return False, e
 
-    def insert_record(self):
-        with self.conn:
-            with self.conn.cursor() as cur:
-                q_string = "INSERT INTO calhacks.SESSION (session_id, doc) VALUES (%s, %s)"
+        else:
+            return True, "Record added successfully"
 
     def retrieve_top_k_topics(self,session_id='1'):
         try:
+            self.conn = s2.connect(os.environ['SINGLESTORE'])
             with self.conn:
                 with self.conn.cursor() as cur:
                     q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
@@ -55,6 +56,23 @@ class DB:
             warnings.warn(f"Error in retrieve_top_k_topics: {e}")
             return False,e
             
+    def retrieve_docs(self,session_id='1'):
+        try:
+            self.conn = s2.connect(os.environ['SINGLESTORE'])
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
+                    cur.execute(q_string, (session_id,))
+
+                    # Retrieve the documents
+                    docs = cur.fetchall()
+
+            return True, [doc[0] for doc in docs]
+        
+        except Exception as e:
+            warnings.warn(f"Error in retrieve_docs: {e}")
+            return False, e
+
     def retrieve_top_k_unique_keywords(self, docs, K=5):
         vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform([doc[0] for doc in docs]).toarray()
@@ -62,6 +80,7 @@ class DB:
         return [vectorizer.get_feature_names_out()[i] for i in top_k_keywords]
     
     def retrieve_docs_based_on_chosen_topics(self, session_id,search_string):
+        self.conn = s2.connect(os.environ['SINGLESTORE'])
         with self.conn:
             with self.conn.cursor() as cur:
                 q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
@@ -85,5 +104,4 @@ class DB:
             k=1,
             search_strategy=SingleStoreDB.SearchStrategy.TEXT_ONLY,
         )
-
-        return True, [page['page_content'] for page in textResults]
+        return True, [page.page_content for page in textResults]
