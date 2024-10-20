@@ -88,6 +88,17 @@ export default function Hero() {
                 </CardContent>
             </Card>
           </Grid>
+          {/* New Canvas Button */}
+          <Grid item>
+            <Card>
+              <CardContent align='center'>
+                <Typography variant="h5" align='center'>Canvas</Typography>
+                <Divider />
+                <Typography align='center' mt={3}>Open your canvas to visualize flows.</Typography>
+                <Button variant='contained' color='primary' onClick={() => {navigate("/canvas");}}>Open Canvas</Button>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
       </Container>
     </Box>
