@@ -1,10 +1,10 @@
+import ReactDOM from 'react-dom';
 import * as React from 'react';
 import Home from './Home';
 import DataUpload from "./data_upload";
 import CanvasPage from "./CanvasPage"; // New canvas component
+import Song from './song';
 
-
-import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 export default function App() {
@@ -16,6 +16,7 @@ export default function App() {
         </Route>
         <Route path="/data_upload" element={<DataUpload />} />
         <Route path="/canvas" element={<CanvasPage />} /> 
+        <Route path="/song" element={<Song/>} />
       </Routes>
     </BrowserRouter>
   );
