@@ -1,29 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactFlow, { useNodesState, useEdgesState, addEdge, MiniMap, Controls, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
+import apiClient from '../config/axios_config';  // Your axios configuration
 
-const initialNodes = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 0 } },
-  { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
-];
-
-const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2', label: 'Edge from 1 to 2' },
-];
 
 const GraphComponent = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);  // React Flow hooks for nodes
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);  // React Flow hooks for edges
+  const [loading, setLoading] = useState(true);  // Track loading state
+  const [error, setError] = useState(null);      // Track error state
 
-  const onConnect = (params) => setEdges((eds) => addEdge(params, eds));
+  useEffect(() => {
+    const fetchGraphData = async () => {
+      try {
+        const response = await apiClient.get('/get_nodes').then(res=>{
+          return res.data;
+        }).then(res=>{
+          setNodes(res.data.nodes);
+          setEdges(res.data.Edges);
+          setLoading(false);
 
+        });  // Fetch from FastAPI
+      } catch (error) {
+        setError("Error fetching graph data: " + error.message);
+        setLoading(false);  
+      }
+    };
+
+    fetchGraphData();
+  }, []);  // Run this effect only once on component mount
+
+  
+
+  if (error) {
+    return <div>{error}</div>;  // Show error message if there was a problem fetching the data
+  }
+  
+  if (loading) {
+    return <div>Loading canvas...</div>; 
+  }
+  else
   return (
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
+      onNodesChange={onNodesChange}  // Required for moving nodes
+      onEdgesChange={onEdgesChange}  // Handle edge updates
+      onConnect={(params) => setEdges((eds) => addEdge(params, eds))}
       fitView
       style={{ width: '100%', height: '100%' }}
     >
