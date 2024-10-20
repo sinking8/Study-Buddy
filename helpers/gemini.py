@@ -1,10 +1,10 @@
 import warnings
 import os
-
+import json
 import numpy as np
 import librosa
 import scipy.io.wavfile as wavfile
-
+import re
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
@@ -18,32 +18,55 @@ class GeminiAPI:
     def __init__(self,prompts_json):
         self.prompts_json = prompts_json
 
-    def get_mcqs(self,context,noq):
+    def clean_text(self, text):
         try:
-            prompt_text = self.prompts_json['mcq']['prompt'].format(CONTEXT=context,TIMES=noq)
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(prompt_text)
-            return True,response.text
+            text= re.sub(r'^[^\[{]*(?=[\[{])', '', text)
+            return re.sub(r'(?<=[\]}]).*', '', text)
         except Exception as e:
-            warnings.warn(f"Error in get_mcqs: {e}")
-            return False,str(e)
+            print("cleaning----", e, text)
+            return text
         
-    def get_matches(self,context,noq):
+    def get_matches(self,context,noq, mode='easy'):
         try:
-            prompt_text = self.prompts_json['match']['prompt'].format(CONTEXT=context,TIMES=noq)
+            prompt_text = self.prompts_json['match']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= '') #self.prompts_json["mode"][mode])
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
-            return True,response.text
+            cleaned_text = self.clean_text(response.text)
+            return True,json.loads(cleaned_text)
         except Exception as e:
             warnings.warn(f"Error in get_matches: {e}")
             return False,str(e)
     
-    def get_qna(self,context,noq, mode='easy'):
+    def get_mcqs(self,context, noq, mode='easy'):
         try:
-            prompt_text = self.prompts_json['mcq']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= mode)
+            prompt_text = self.prompts_json['mcq']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= self.prompts_json["mode"][mode])
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
-            return True,response.text
+            cleaned_text = self.clean_text(response.text)
+            return True,json.loads(cleaned_text)
+        except Exception as e:
+            print(cleaned_text)
+            warnings.warn(f"Error in get_matches: {e}")
+            return False,str(e)
+        
+    def get_sequence(self,context, noq, mode='easy'):
+        try:
+            prompt_text = self.prompts_json['mcq']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= self.prompts_json["mode"][mode])
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(prompt_text)
+            cleaned_text = self.clean_text(response.text)
+            return True,json.loads(cleaned_text)
+        except Exception as e:
+            warnings.warn(f"Error in get_matches: {e}")
+            return False,str(e)
+
+    def get_connections(self,context, noq, mode='easy'):
+        try:
+            prompt_text = self.prompts_json['mcq']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= self.prompts_json["mode"][mode])
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(prompt_text)
+            cleaned_text = self.clean_text(response.text)
+            return True,json.loads(cleaned_text)
         except Exception as e:
             warnings.warn(f"Error in get_matches: {e}")
             return False,str(e)
