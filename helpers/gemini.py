@@ -1,6 +1,8 @@
 import warnings
 import os
 
+import json
+
 import numpy as np
 import librosa
 import scipy.io.wavfile as wavfile
@@ -32,12 +34,16 @@ class GeminiAPI:
             warnings.warn(f"Error in get_matches: {e}")
             return False,str(e)
         
-    def fetch_connections(self,context):
+    def fetch_connections(self,context,times=5):
         try:
-            prompt_text = self.prompts_json['connection']['prompt'].format(CONTEXT=context,TIMES=5)
+            prompt_text = self.prompts_json['connection']['prompt'].format(CONTEXT=context,TIMES=times)
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
-            return True,eval(response.text)
+            json_str = response.text.strip().split('\n', 1)[1].strip()[:-3]  # Remove the surrounding ```json and ```
+
+            # Convert JSON string to Python object
+            data = json.loads(json_str)
+            return True,data
         except Exception as e:
             warnings.warn(f"Error in fetch_connections: {e}")
             return False,str(e)

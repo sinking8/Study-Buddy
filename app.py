@@ -19,6 +19,8 @@ from helpers.db_handler import *
 from helpers.process import *
 from helpers.hume_gen import *
 
+import json
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -83,11 +85,12 @@ def get_match_questions(session_id:str,search_string:str):
 
 @app.get("/get_connections")
 def get_connections(session_id:str):
+    print(session_id)
     status,response = DB.retrieve_docs(session_id)
     if(status == False):
         return {"status":status,"response":response}
-    status, response = gemini_api.get_matches(" ".join(response), 5)
-    
+    status, response = gemini_api.fetch_connections(" ".join(response), 5)
+
     return {"status": status, "response": response}
 
 @app.get("/get_keywords")
