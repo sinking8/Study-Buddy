@@ -6,6 +6,9 @@
         "prompt":"Here is the context for the matching questions {CONTEXT}. Kindly prepare {TIMES} matching questions. I want the output format in the form of a nested list where each sub-arrays are matching pairs"
     },
     "song":{
-        "prompt":"This is a song writing task. I want you to write a song on this content. The song should contain all the technical details and should emphasize the main points. Make sure to use rhyming words and make it catchy."
+        "prompt":"This is a song writing task. I want you to write a lyrics for a song on this content {CONTEXT}. The song should contain all the technical details and should emphasize the main points. Make sure to use rhyming words and make it catchy and I just need the lyrics (max 10-20 lines)"
+    },
+    "connection":{
+        "prompt":"Here is the context for the connection questions: {CONTEXT}. Kindly prepare {TIMES} connection questions. The output should be in the form of a JSON array. Below is an example format for the JSON output:\n\n[\n    { \"id\": \"apple\", \"category\": \"fruits\", \"label\": \"Apple\" },\n    { \"id\": \"banana\", \"category\": \"fruits\", \"label\": \"Banana\" },\n    { \"id\": \"markTwain\", \"category\": \"writers\", \"label\": \"Mark Twain\" },\n    { \"id\": \"jkRowling\", \"category\": \"writers\", \"label\": \"J.K. Rowling\" },\n    { \"id\": \"mars\", \"category\": \"planets\", \"label\": \"Mars\" },\n    { \"id\": \"jupiter\", \"category\": \"planets\", \"label\": \"Jupiter\" }\n]"
     }
 }

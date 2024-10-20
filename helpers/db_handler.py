@@ -23,6 +23,7 @@ class DB:
         self.conn = s2.connect(os.environ['SINGLESTORE'])
 
     def add_record(self,user_id,session_id,doc):
+
         try:
             self.conn = s2.connect(os.environ['SINGLESTORE'])
             with self.conn:
@@ -39,6 +40,7 @@ class DB:
 
     def retrieve_top_k_topics(self,session_id='1'):
         try:
+            self.conn = s2.connect(os.environ['SINGLESTORE'])
             with self.conn:
                 with self.conn.cursor() as cur:
                     q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
@@ -54,6 +56,23 @@ class DB:
             warnings.warn(f"Error in retrieve_top_k_topics: {e}")
             return False,e
             
+    def retrieve_docs(self,session_id='1'):
+        try:
+            self.conn = s2.connect(os.environ['SINGLESTORE'])
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    q_string = "SELECT doc FROM calhacks.SESSION WHERE session_id = %s"
+                    cur.execute(q_string, (session_id,))
+
+                    # Retrieve the documents
+                    docs = cur.fetchall()
+
+            return True, [doc[0] for doc in docs]
+        
+        except Exception as e:
+            warnings.warn(f"Error in retrieve_docs: {e}")
+            return False, e
+
     def retrieve_top_k_unique_keywords(self, docs, K=5):
         vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform([doc[0] for doc in docs]).toarray()

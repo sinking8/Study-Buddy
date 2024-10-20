@@ -41,7 +41,7 @@ class HumeGen:
 
     def get_hume_audio(self, text):
         ws = create_connection(f'wss://api.hume.ai/v0/evi/chat?api_key={os.environ["HUME_API_KEY"]}')
-        ws.send(json.dumps({"type": "user_input", "text": f'can you say the text marked in double quotes "{text}". Please say just the text only dont say anything else. No intro No unecessary context'}))
+        ws.send(json.dumps({"type": "user_input", "text": f'can you say the text marked in double quotes "{text}". Please say just the text only dont say anything else. No intro No unecessary context; Its a song so be expressive'}))
 
         # Empty Lists
         audio_s = []
@@ -55,6 +55,7 @@ class HumeGen:
 
             if result['type'] == 'audio_output':
                 audio_s.append(result['data'])
+
 
             if result['type'] == 'assistant_message':
                 msg_s.append(result['message']['content'])
@@ -75,7 +76,7 @@ class HumeGen:
         self.message = " ".join(msg_s)
 
         # Call the function to modify the audio into a song format
-        self.hume_audio_to_song()
+        return self.hume_audio_to_song()
 
     def hume_audio_to_song(self):
         # Split the audio into smaller chunks for smoother pitch modulation
@@ -107,3 +108,5 @@ class HumeGen:
 
         # Save the final song-like audio with pitch modulation
         full_audio.export("./uploads/hume_melodic_song.wav", format="wav")
+
+        return full_audio

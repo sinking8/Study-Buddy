@@ -39,12 +39,30 @@ hume_gen = HumeGen()
 
 @app.get("/")
 def home_root():
-    hume_gen.get_hume_audio("A for apples, B for bananas, J for jaykay")
+    hume_gen.get_hume_audio("A for apples, B for bananas, J for jaykay I am the king I am the queen")
     return {"message": "Hello World"}
 
 @app.get("/prompts")
 def get_prompts():
     return prompts
+
+@app.get("/get_summarized_audio")
+def get_summarized_audio(session_id: str):
+    status, response = DB.retrieve_docs(session_id)
+    if(status == False):
+        return {"status":status,"response":response}
+    
+    status, response = gemini_api.audio_transcript_gen(" ".join(response))
+
+    if(status == False):
+        return {"status":status,"response":response}
+    
+    # Export Audio
+    audio = hume_gen.get_hume_audio(response)
+    audio = audio.export(format="wav")
+
+    # return audio as base64
+    return {"status": status, "response": audio,"response_text":response}
 
 @app.get("/get_mcq_questions")
 def get_mcq_questions(session_id: str,search_string:str):
@@ -61,6 +79,15 @@ def get_match_questions(session_id:str,search_string:str):
     if(status == False):
         return {"status":status,"response":response}
     status, response = gemini_api.get_matches(" ".join(response), 5)
+    return {"status": status, "response": response}
+
+@app.get("/get_connections")
+def get_connections(session_id:str):
+    status,response = DB.retrieve_docs(session_id)
+    if(status == False):
+        return {"status":status,"response":response}
+    status, response = gemini_api.get_matches(" ".join(response), 5)
+    
     return {"status": status, "response": response}
 
 @app.get("/get_keywords")
@@ -124,7 +151,6 @@ async def create_session(
 
     ## Add Record to SingleStore
     for doc in cleaned_texts:
-        print(doc)
         DB.add_record("1",str(session_id),doc)
 
     return JSONResponse(content={
