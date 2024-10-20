@@ -1,3 +1,4 @@
+from io import BytesIO
 import os
 import json
 import requests
@@ -51,6 +52,7 @@ def get_prompts():
 
 @app.get("/get_summarized_audio")
 def get_summarized_audio(session_id: str):
+    print(session_id)
     status, response = DB.retrieve_docs(session_id)
     if(status == False):
         return {"status":status,"response":response}
@@ -60,13 +62,20 @@ def get_summarized_audio(session_id: str):
     if(status == False):
         return {"status":status,"response":response}
     
-    # Export Audio
+    audio_io = BytesIO()
     audio = hume_gen.get_hume_audio(response)
-    audio = audio.export(format="wav")
+    audio.export(audio_io, format="wav")
+    audio_io.seek(0)  # Move to the beginning of the BytesIO object
 
-    # return audio as base64
-    return {"status": status, "response": audio,"response_text":response}
+    # Encode the audio as base64
+    audio_base64 = base64.b64encode(audio_io.read()).decode("utf-8")
 
+    print("audio generated")
+
+    # Return audio as base64
+    return JSONResponse(
+        content={"status": status, "response": audio_base64}
+    )
 @app.get("/get_mcq_questions")
 def get_mcq_questions(session_id: str,search_string:str):
     status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
@@ -86,7 +95,6 @@ def get_match_questions(session_id:str):
 
 @app.get("/get_connections")
 def get_connections(session_id:str):
-    print(session_id)
     status,response = DB.retrieve_docs(session_id)
     if(status == False):
         return {"status":status,"response":response}
@@ -115,7 +123,7 @@ def get_mcq_questions(session_id: str,search_string:str):
     status, response, timestamp  = requests.post("http://127.0.0.1:8000/rest/post", json = {"response": response, "mode":'easy'}) 
     return {"status": status, "response": response}
 
-    
+
 @app.post("/create_session")
 async def create_session(
     session_name: str = Form(...), 

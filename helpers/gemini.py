@@ -32,8 +32,7 @@ class GeminiAPI:
             prompt_text = self.prompts_json['match']['prompt'].format(CONTEXT=context,TIMES=noq, MODE= '') #self.prompts_json["mode"][mode])
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
-            cleaned_text = self.clean_text(response.text)
-            return True,json.loads(cleaned_text)
+            return True,json.loads(response.text.strip().split('\n', 1)[1].strip()[:-3])
         except Exception as e:
             warnings.warn(f"Error in get_matches: {e}")
             return False,str(e)
@@ -98,8 +97,6 @@ class GeminiAPI:
             prompt_text = self.prompts_json['song']['prompt'].format(CONTEXT=context)
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
-
-
             song_script = response.text
             return True,song_script
     
