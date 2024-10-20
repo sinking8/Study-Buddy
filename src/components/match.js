@@ -31,7 +31,13 @@ const ConnectionsGame = () => {
                 }
             });
             // Remove duplicate cateogories
-            setCategories(Array.from(new Set(categories)));
+            // Shuffle cards array
+            const shuffle = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            };
         })
         .catch((error) => {
             console.error('Error fetching data: ', error);

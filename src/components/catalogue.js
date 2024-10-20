@@ -12,23 +12,27 @@ import Footer from './Footer';
 
 import { useNavigate } from "react-router-dom";
 
+import snake_img from '../assets/snake.jpg'
+import memory_img from '../assets/flip.jpg'
+import match_img from '../assets/memory.jpg'
+
 const gameCards = [
   {
     gameName: 'Slither and Solve',
-    previewImage: 'https://via.placeholder.com/400x300.png?text=Game+One+Preview',
+    previewImage: snake_img,
     navigate_url : '/snake',
     description: 'Get ready to chow down! In this classic snake game, you’ll munch on deliciously wrong answers. Gobble the right one, and you’re a genius! Miss the mark, and it’s game over—don’t let the snake starve!'
   },
   {
     gameName: 'Flip & Match Fiesta',
-    previewImage: 'https://via.placeholder.com/400x300.png?text=Game+Two+Preview',
+    previewImage: match_img,
     navigate_url : '/memory',
     description: "Put your memory to the test! Flip tiles to match definitions with their words. Can you keep your brain from flipping out, or will you just end up with a bunch of mismatched tiles?",
   },
   {
     gameName: 'Organize This',
     navigate_url : '/connections',
-    previewImage: 'https://via.placeholder.com/400x300.png?text=Game+Three+Preview',
+    previewImage: memory_img,
     description: 'Time to show off your organizing skills! Word tiles are thrown into chaos, and it’s up to you to categorize them before they start a rebellion. Can you reign in the vocabulary?',
   },
   {
