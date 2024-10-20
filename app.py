@@ -114,6 +114,8 @@ def get_mcq_questions(session_id: str,search_string:str):
     # status, response = gemini_api.get_mcqs(" ".join(response), 5)
     status, response, timestamp  = requests.post("http://127.0.0.1:8000/rest/post", json = {"response": response, "mode":'easy'}) 
     return {"status": status, "response": response}
+
+    
 @app.post("/create_session")
 async def create_session(
     session_name: str = Form(...), 
