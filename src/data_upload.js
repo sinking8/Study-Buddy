@@ -6,7 +6,11 @@ import { faUpload, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import Button from '@mui/material/Button';
 import './data_upload.scss';
 
+import { useNavigate } from 'react-router-dom';
+
 export default function DataUpload() {
+  let navigate = useNavigate();
+
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
   const [uploadMessage, setUploadMessage] = useState('');
@@ -57,6 +61,9 @@ export default function DataUpload() {
 
       const data = await response.json();
       setUploadMessage(`File upload success: ${JSON.stringify(data.uploaded_files)}`);
+      console.log(data)
+      localStorage.setItem("session_id", data.session_id);
+      navigate('/catalogue');
       setSelectedFiles([]); // Clear selected files after upload
     } catch (error) {
       setUploadMessage(`File upload error: ${error.message}`);

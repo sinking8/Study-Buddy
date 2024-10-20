@@ -18,7 +18,8 @@ const Song = () => {
     // Fetch music data from API
     const fetchMusic = async () => {
       try {
-        const response = await axios.get('YOUR_API_ENDPOINT'); // Replace with your API endpoint
+        let session_id = localStorage.getItem("session_id");
+        const response = await axios.get('YOUR_API_ENDPOINT',); // Replace with your API endpoint
         setMusicList(response.data); // Assuming the response data is an array of music objects
       } catch (error) {
         console.error("Error fetching music data", error);

@@ -11,8 +11,13 @@ import CardContent from '@mui/material/CardContent';
 
 import { useNavigate } from "react-router-dom";
 
+// Create LocalStorage
+
+
 export default function Hero() {
   let navigate = useNavigate();
+  
+
   return (
     <Box
       id="hero"
@@ -39,6 +44,7 @@ export default function Hero() {
       >
         <Stack
           spacing={2}
+          marginTop={80}
           sx={{ alignItems: 'center', width: { xs: '100%', sm: '70%' } }}
         >
 
@@ -68,25 +74,26 @@ export default function Hero() {
             >
               Not&nbsp;Harder
             </Typography>
+            <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate('/data_upload')}}>Get Started!</Button>
         </Stack>
         <Grid container mt={3} gap={2} sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }} >
           <Grid item>
             <Card p={5}>
-              <CardContent align='center' justifyContent='center' p={4}>
+              <CardContent align='center' justifycontent='center' p={4}>
                 <Typography variant="h5" align='center' >Gameify</Typography>
                 <Divider />
                 <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
-                <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate("data_upload");}}>Game On</Button>
+                <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate("/game")}}>Game On</Button>
                 </CardContent>
             </Card>
           </Grid>
           <Grid item>
             <Card p={5}>
-              <CardContent align='center' justifyContent='center' p={4}>
+              <CardContent align='center' justifycontent='center' p={4}>
                 <Typography variant="h5" align='center'  >Musify</Typography>
                 <Divider />
                 <Typography align='center' mt={3}>Earn points and badges as you complete tasks and quizzes.</Typography>
-                <Button mt={3} variant='contained' color='primary'>Tune In</Button>
+                <Button mt={3} variant='contained' color='primary' onClick={()=>{navigate("/song")}}>Tune In</Button>
                 </CardContent>
             </Card>
           </Grid>
@@ -97,7 +104,7 @@ export default function Hero() {
                 <Typography variant="h5" align='center'>Canvas</Typography>
                 <Divider />
                 <Typography align='center' mt={3}>Open your canvas to visualize flows.</Typography>
-                <Button variant='contained' color='primary' onClick={() => {navigate("/canvas");}}>Open Canvas</Button>
+                <Button variant='contained' color='primary' onClick={() => {navigate("/canvas")}}>Open Canvas</Button>
               </CardContent>
             </Card>
           </Grid>

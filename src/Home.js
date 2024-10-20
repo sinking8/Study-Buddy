@@ -8,11 +8,9 @@ import Footer from './components/Footer';
 import getMPTheme from './theme/getMPTheme';
 
 export default function Home() {
-  const [mode, setMode] = React.useState('light');
-  const MPTheme = createTheme(getMPTheme(mode));
-
+  const MPTheme = createTheme(getMPTheme('light'));
   return (
-      <ThemeProvider theme={MPTheme} mode='light'>
+      <ThemeProvider theme={MPTheme}>
         <CssBaseline enableColorScheme />
         <AppAppBar />
         <div>
