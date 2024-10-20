@@ -3,6 +3,8 @@ import json
 
 from fastapi import FastAPI, File, Form, UploadFile,HTTPException
 from typing import List
+
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -15,6 +17,7 @@ load_dotenv()
 from helpers.gemini import *
 from helpers.db_handler import *
 from helpers.process import *
+from helpers.hume_gen import *
 
 app = FastAPI()
 app.add_middleware(
@@ -32,8 +35,11 @@ with open('./utils/prompts.json') as f:
 gemini_api = GeminiAPI(prompts)
 DB = DB()
 
+hume_gen = HumeGen()
+
 @app.get("/")
 def home_root():
+    hume_gen.get_hume_audio("A for apples, B for bananas, J for jaykay")
     return {"message": "Hello World"}
 
 @app.get("/prompts")
