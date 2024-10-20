@@ -8,6 +8,7 @@ from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+
 import random
 
 # Import env file
@@ -76,11 +77,11 @@ def get_mcq_questions(session_id: str,search_string:str):
     return {"status": status, "response": response}
 
 @app.get("/get_match_questions")
-def get_match_questions(session_id:str,search_string:str):
-    status,response = DB.retrieve_docs_based_on_chosen_topics(session_id,search_string)
+def get_match_questions(session_id:str):
+    status,response = DB.retrieve_docs(session_id)
     if(status == False):
         return {"status":status,"response":response}
-    status, response = gemini_api.get_matches(" ".join(response), 5)
+    status, response = gemini_api.get_matches(" ".join(response), 8)
     return {"status": status, "response": response}
 
 @app.get("/get_connections")

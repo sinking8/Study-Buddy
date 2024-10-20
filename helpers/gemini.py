@@ -29,7 +29,11 @@ class GeminiAPI:
             prompt_text = self.prompts_json['match']['prompt'].format(CONTEXT=context,TIMES=noq)
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt_text)
-            return True,response.text
+            json_str = response.text.strip().split('\n', 1)[1].strip()[:-3]  # Remove the surrounding ```json and ```
+
+            # Convert JSON string to Python object
+            data = json.loads(json_str)
+            return True,data
         except Exception as e:
             warnings.warn(f"Error in get_matches: {e}")
             return False,str(e)
