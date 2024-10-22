@@ -28,7 +28,7 @@ The Study Buddy app was built using an advanced and dynamic tech stack designed 
 
 -This is powered by SingleStore Database, ensuring rapid processing and seamless user interaction, making Study Buddy a powerful, interactive learning tool.
 
-![Image][Image]
+![https://github.com/sinking8/Study-Buddy/blob/main/system_diagarm.jpeg][Image]
 
 ## Challenges we ran into
 
